@@ -1,0 +1,4 @@
+/build/generated/sources/open-api/**
+!build/generated/sources/open-api/annotationProcessor/**
+!build/generated/sources/open-api/common/headers/**
+!build/generated/sources/open-api/main/java/is/**

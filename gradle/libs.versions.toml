@@ -1,0 +1,33 @@
+[versions]
+# BOM-ы
+spring-boot = "4.1.1"
+spring-dependency-management = "1.1.7"
+
+# Плагины
+openapi-generator-plugin = "7.25.0"
+protobuf-plugin = "0.10.0"
+
+# Основные библиотеки
+lombok = "1.18.48"
+jakarta-annotation-api = "3.0.0"
+jackson-databind-nullable = "0.2.11"
+resilience4j = "2.4.0"
+
+[libraries]
+# BOM-ы
+
+# Spring Boot Starters
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+
+# Utilities
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api", version.ref = "jakarta-annotation-api" }
+jackson-databind-nullable = { module = "org.openapitools:jackson-databind-nullable", version.ref = "jackson-databind-nullable" }
+resilience4j-circuitbreaker = { module = "io.github.resilience4j:resilience4j-circuitbreaker", version.ref = "resilience4j" }
+resilience4j-ratelimiter = { module = "io.github.resilience4j:resilience4j-ratelimiter", version.ref = "resilience4j" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency.management", version.ref = "spring-dependency-management" }
+openapi-generator = { id = "org.openapi.generator", version.ref = "openapi-generator-plugin" }
+protobuf-plugin = {id = "com.google.protobuf", version.ref = "protobuf-plugin" }
