@@ -2,12 +2,13 @@ plugins {
     `java-library`
     `maven-publish`
 
+    id("io.spring.dependency-management") version "1.1.7"
     alias(libs.plugins.spring.boot)
-    alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.protobuf.plugin)
     alias(libs.plugins.openapi.generator)
 
 }
+
 
 group = "com.github.isToxic"
 version = "1.0.0"
@@ -44,12 +45,17 @@ dependencies {
 
     api(libs.resilience4j.circuitbreaker)
     api(libs.resilience4j.ratelimiter)
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.wiremock:wiremock-standalone:3.9.1")
+    testImplementation("io.grpc:grpc-inprocess:1.68.1")
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_25
+    sourceCompatibility = JavaVersion.VERSION_21
     withSourcesJar()
 }
+
 
 sourceSets {
     main {
@@ -140,6 +146,10 @@ tasks{
 
     named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
         enabled = false
+    }
+
+    withType<Test> {
+        useJUnitPlatform()
     }
 
     register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("codegen") {

@@ -49,4 +49,12 @@ public record TinkoffResilienceProperties(
             pathMapping = new LinkedHashMap<>(DEFAULT_PATH_MAPPING);
         }
     }
+
+    public Map<String, ServiceResilienceProperties> getServices() {
+        return services;
+    }
+
+    public Map<String, String> getPathMapping() {
+        return pathMapping;
+    }
 }

@@ -2,9 +2,9 @@ rootProject.name = "t-bank-sdk"
 
 pluginManagement {
     repositories {
-        mavenLocal()
         gradlePluginPortal()
         mavenCentral()
+        mavenLocal()
     }
 }
 plugins {
@@ -13,7 +13,8 @@ plugins {
 
 dependencyResolutionManagement {
     repositories {
-        mavenLocal()
         mavenCentral()
+        mavenLocal()
+        gradlePluginPortal()
     }
 }

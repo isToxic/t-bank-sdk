@@ -14,6 +14,7 @@ import org.apache.hc.core5.pool.PoolReusePolicy;
 import org.apache.hc.core5.util.Timeout;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
@@ -28,9 +29,10 @@ public class TinkoffRestClientConfig {
             ResilienceClientHttpRequestInterceptor resilienceInterceptor) {
         return RestClient.builder()
                 .requestFactory(clientHttpRequestFactory)
-                .requestInterceptors(resilienceInterceptor)
+                .requestInterceptor(resilienceInterceptor)
                 .build();
     }
+
 
     @Bean
     public HttpComponentsClientHttpRequestFactory tinkoffClientHttpRequestFactory(@Qualifier("tinkoffHttpClient") HttpClient httpClient) {

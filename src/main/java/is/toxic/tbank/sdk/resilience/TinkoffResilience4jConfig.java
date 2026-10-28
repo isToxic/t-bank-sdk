@@ -44,7 +44,7 @@ public class TinkoffResilience4jConfig {
             RateLimiterConfig config = RateLimiterConfig.custom()
                     .limitRefreshPeriod(Duration.ofMinutes(p.rateLimiterLimitRefreshPeriodMinutes()))
                     .limitForPeriod(p.rateLimiterLimitForPeriod())
-                    .timeout(Duration.ofSeconds(p.rateLimiterTimeoutSeconds()))
+                    .timeoutDuration(Duration.ofSeconds(p.rateLimiterTimeoutSeconds()))
                     .build();
             map.put(entry.getKey(), RateLimiter.of("tinkoff-" + entry.getKey(), config));
         }

@@ -1,7 +1,6 @@
 package is.toxic.tbank.sdk.resilience;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import io.github.resilience4j.decorator.Decorators;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpRequest;
@@ -11,7 +10,7 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 public class ResilienceClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
@@ -21,42 +20,42 @@ public class ResilienceClientHttpRequestInterceptor implements ClientHttpRequest
     private final Map<String, String> pathMapping;
 
     @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-            throws IOException {
-        String serviceName = resolveServiceName(request.getURI().getPath());
+    public ClientHttpResponse intercept(HttpRequest request, byte [] body, ClientHttpRequestExecution execution) throws IOException {
+
+        String path = request.getURI().getPath();
+        String serviceName = resolveServiceName(path);
         if (serviceName == null) {
             return execution.execute(request, body);
         }
 
-        CircuitBreaker cb = circuitBreakers.get(serviceName);
-        RateLimiter rl = rateLimiters.get(serviceName);
+        CircuitBreaker cb = circuitBreakers == null ? null : circuitBreakers.get(serviceName);
+        RateLimiter rl = rateLimiters == null ? null : rateLimiters.get(serviceName);
 
-        Supplier<ClientHttpResponse> supplier = () -> {
-            try {
-                return execution.execute(request, body);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        };
+        Callable<ClientHttpResponse> callable = () -> execution.execute(request, body);
 
-        Supplier<ClientHttpResponse> decorated = Decorators.ofSupplier(supplier)
-                .withCircuitBreaker(cb)
-                .withRateLimiter(rl)
-                .get();
+        if (cb != null) {
+            callable = cb.decorateCallable(callable);
+        }
+        if (rl != null) {
+            callable = RateLimiter.decorateCallable(rl, callable);
+        }
 
         try {
-            return decorated.get();
-        } catch (UncheckedIOException e) {
-            throw e.getCause();
+            return callable.call();
+        } catch (IOException | RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOException(e);
         }
     }
 
     private String resolveServiceName(String path) {
-        if (path == null) {
+        if (path == null || pathMapping == null || pathMapping.isEmpty()) {
             return null;
         }
-        for (var entry : pathMapping.entrySet()) {
-            if (path.startsWith(entry.getKey())) {
+        for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
+            String key = entry.getKey();
+            if (key != null && !key.isEmpty() && path.startsWith(key)) {
                 return entry.getValue();
             }
         }
