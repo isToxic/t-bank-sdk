@@ -113,34 +113,14 @@ publishing {
     }
 
     repositories {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-            pom {
-                name.set("T-bank gRPC & REST client library")
-                description.set("Custom T-bank gRPC & REST client library that injects POJO`s and clients for integration")
-                url.set("https://github.com/isToxic/t-bank-sdk")
-
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("isToxic")
-                        name.set("Stepan Mokrov")
-                        email.set("s.b.mokrov@gmail.com")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:git://github.com/isToxic/t-bank-sdk.git")
-                    developerConnection.set("scm:git:ssh://github.com:isToxic/t-bank-sdk.git")
-                    url.set("https://github.com/isToxic/t-bank-sdk")
-                }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/isToxic/t-bank-sdk")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GH_USERNAME")
+                password = project.findProperty("gpr.token") as String? ?: System.getenv("GH_TOKEN")
             }
         }
-    }
 }
 
 tasks{
@@ -209,4 +189,4 @@ tasks{
             .withPathSensitivity(PathSensitivity.NONE)
             .withPropertyName("openApiGeneratorIgnoreFile")
     }
-}
+}}
