@@ -116,8 +116,8 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
             pom {
-                name.set("jOOQ OpenAPI & Lombok Generator")
-                description.set("Custom jOOQ code generator that injects Swagger/OpenAPI and Lombok annotations into POJOs")
+                name.set("T-bank gRPC & REST client library")
+                description.set("Custom T-bank gRPC & REST client library that injects POJO`s and clients for integration")
                 url.set("https://github.com/isToxic/t-bank-sdk")
 
                 licenses {
